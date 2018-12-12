@@ -25,14 +25,12 @@ public class MainActivity extends AppCompatActivity {
         cityTextView = findViewById(R.id.cityEditText);
         weatherTextView = findViewById(R.id.weatherDescriptionTextView);
 
-        searchBtn.setOnClickListener(new View.OnClickListener(){
-
+        searchBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("test", "test");
             }
         });
-
     }
 }
 
