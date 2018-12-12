@@ -33,7 +33,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:textColor="@android:color/black" />
 
     <Button
