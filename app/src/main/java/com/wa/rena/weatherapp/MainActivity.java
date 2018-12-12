@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
+            String weatherText = "";
             try {
                 JSONObject jasonObj = new JSONObject(result);
                 String info = jasonObj.getString("weather");
@@ -65,9 +65,14 @@ public class MainActivity extends AppCompatActivity {
 
                 for (int i=0; i < arr.length(); i++){
                     JSONObject infoJson = arr.getJSONObject(i);
-                    Log.i("info", infoJson.getString("main"));
-                    Log.i("info", infoJson.getString("description"));
+                    String main = infoJson.getString("main");
+                    String desc = infoJson.getString("description");
+
+                    weatherText += main + ": " + desc + "\r\n";
                 }
+
+                weatherTextView.setText(weatherText);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
