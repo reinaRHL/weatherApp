@@ -1,10 +1,12 @@
 package com.wa.rena.weatherapp;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
+
             String result ="";
+
             try {
                 URL url = new URL(strings[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -82,9 +87,16 @@ public class MainActivity extends AppCompatActivity {
     }
     public void findWeather(){
         String city = cityTextView.getText().toString();
+        String encodedCityName = URLEncoder.encode(city);
+
+        // gets the input method that is currently being using, which is keyboard
+        InputMethodManager inputMethod = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // hide keyboard from the window
+        inputMethod.hideSoftInputFromWindow(cityTextView.getWindowToken(),0);
 
         DownloadTask task = new DownloadTask();
-        String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + appid;
+        String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&APPID=" + appid;
         task.execute(urlString);
     }
 
@@ -104,7 +116,3 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-
-
-//example api call
-//http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=18c51bde0a28d9196fef71382fcbd4d8
