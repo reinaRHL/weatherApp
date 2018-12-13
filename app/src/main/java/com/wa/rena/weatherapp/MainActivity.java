@@ -29,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
     Button searchBtn;
     EditText cityTextView;
     TextView weatherTextView;
+    TextView weatherTemp;
+    TextView morning;
+    TextView afternoon;
+    TextView night;
+    TextView cityNameTextView;
+
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -64,9 +70,13 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(result);
             String weatherText = "";
             try {
-                JSONObject jasonObj = new JSONObject(result);
-                String info = jasonObj.getString("weather");
-                JSONArray arr = new JSONArray(info);
+                JSONObject jsonObj = new JSONObject(result);
+                String weatherCondition = jsonObj.getString("weather");
+                String cityName = jsonObj.getString("name");
+                JSONObject sysObject = jsonObj.getJSONObject("sys");
+                String countyName = sysObject.getString("country");
+                JSONArray arr = new JSONArray(weatherCondition);
+
 
                 for (int i=0; i < arr.length(); i++){
                     JSONObject infoJson = arr.getJSONObject(i);
@@ -77,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 weatherTextView.setText(weatherText);
+                cityNameTextView.setText(cityName + ", " + countyName);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -96,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         inputMethod.hideSoftInputFromWindow(cityTextView.getWindowToken(),0);
 
         DownloadTask task = new DownloadTask();
-        String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&APPID=" + appid;
+        String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&units=metric&APPID=" + appid;
         task.execute(urlString);
     }
 
@@ -107,6 +118,11 @@ public class MainActivity extends AppCompatActivity {
         searchBtn = findViewById(R.id.searchBtn);
         cityTextView = findViewById(R.id.cityEditText);
         weatherTextView = findViewById(R.id.weatherDescriptionTextView);
+        weatherTemp = findViewById(R.id.weatherTemp);
+        morning = findViewById(R.id.morning);
+        afternoon = findViewById(R.id.afternoon);
+        night = findViewById(R.id.night);
+        cityNameTextView = findViewById(R.id.today);
 
         searchBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
