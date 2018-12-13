@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +26,7 @@ import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
-    String appid = "18c51bde0a28d9196fef71382fcbd4d8";
+    final String appid = "18c51bde0a28d9196fef71382fcbd4d8";
     Button searchBtn;
     EditText cityTextView;
     TextView weatherTextView;
@@ -36,14 +37,12 @@ public class MainActivity extends AppCompatActivity {
     TextView cityNameTextView;
     TextView conditionOther;
 
-
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
 
             String result ="";
-
             try {
                 URL url = new URL(strings[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -69,43 +68,44 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String weatherText = "";
-            try {
-                JSONObject jsonObj = new JSONObject(result);
-                String weatherCondition = jsonObj.getString("weather");
-                String cityName = jsonObj.getString("name");
 
-                JSONObject sysObject = jsonObj.getJSONObject("sys");
-                String countyName = sysObject.getString("country");
+                String weatherText = "";
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    String weatherCondition = jsonObj.getString("weather");
+                    String cityName = jsonObj.getString("name");
 
-                JSONObject tempObj = jsonObj.getJSONObject("main");
-                String temp = tempObj.getString("temp");
-                String humidity = tempObj.getString("humidity");
+                    JSONObject sysObject = jsonObj.getJSONObject("sys");
+                    String countyName = sysObject.getString("country");
 
-                JSONObject windObj = jsonObj.getJSONObject("wind");
-                String windSpeed = windObj.getString("speed");
+                    JSONObject tempObj = jsonObj.getJSONObject("main");
+                    String temp = tempObj.getString("temp");
+                    String humidity = tempObj.getString("humidity");
 
-                JSONArray arr = new JSONArray(weatherCondition);
+                    JSONObject windObj = jsonObj.getJSONObject("wind");
+                    String windSpeed = windObj.getString("speed");
+
+                    JSONArray arr = new JSONArray(weatherCondition);
 
 
-                for (int i=0; i < arr.length(); i++){
-                    JSONObject infoJson = arr.getJSONObject(i);
-                    String description = infoJson.getString("description").toUpperCase();
-                    weatherText += description + "\r\n";
+                    for (int i=0; i < arr.length(); i++){
+                        JSONObject infoJson = arr.getJSONObject(i);
+                        String description = infoJson.getString("description").toUpperCase();
+                        weatherText += description + "\r\n";
+                    }
+
+                    weatherTextView.setText(weatherText);
+                    cityNameTextView.setText(cityName + ", " + countyName);
+                    weatherTemp.setText(temp + " °C");
+                    conditionOther.setText("Wind: " + windSpeed + " km/s\r\nHumidity: " + humidity + " %");
+
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(),"Something went wrong :(", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
-
-                weatherTextView.setText(weatherText);
-                cityNameTextView.setText(cityName + ", " + countyName);
-                weatherTemp.setText(temp + " °C");
-                conditionOther.setText("Wind: " + windSpeed + " km/s\r\nHumidity: " + humidity + " %");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
         }
     }
+
     public void findWeather(){
         String city = cityTextView.getText().toString();
         String encodedCityName = URLEncoder.encode(city);
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         cityTextView.setText("");
         DownloadTask task = new DownloadTask();
         String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&units=metric&APPID=" + appid;
+        // String foreCastUrlString = "http://api.openweathermap.org/data/2.5/forecast?q=" + encodedCityName + "&units=metric&appid=" + appid;
         task.execute(urlString);
     }
 
