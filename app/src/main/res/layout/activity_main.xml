@@ -39,9 +39,10 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
+        android:ems="10"
+        android:hint="coquitlam  or coquitlam, ca"
         android:inputType="text"
         android:maxLines="1"
-        android:ems="10"
         android:textColor="@android:color/black" />
 
     <Button

@@ -108,7 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void findWeather(){
         String city = cityTextView.getText().toString();
-        String encodedCityName = URLEncoder.encode(city);
+        String[] splittedCity = city.trim().split("\\s*,\\s*");
+        String encodedCityName = URLEncoder.encode(splittedCity[0]);
+
+        if (splittedCity.length == 2){
+            encodedCityName = encodedCityName + "," + splittedCity[1];
+        }
 
         // gets the input method that is currently being using, which is keyboard
         InputMethodManager inputMethod = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
