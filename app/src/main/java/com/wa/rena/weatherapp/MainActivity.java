@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     TextView afternoon;
     TextView night;
     TextView cityNameTextView;
+    TextView conditionOther;
 
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
@@ -73,21 +74,30 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonObj = new JSONObject(result);
                 String weatherCondition = jsonObj.getString("weather");
                 String cityName = jsonObj.getString("name");
+
                 JSONObject sysObject = jsonObj.getJSONObject("sys");
                 String countyName = sysObject.getString("country");
+
+                JSONObject tempObj = jsonObj.getJSONObject("main");
+                String temp = tempObj.getString("temp");
+                String humidity = tempObj.getString("humidity");
+
+                JSONObject windObj = jsonObj.getJSONObject("wind");
+                String windSpeed = windObj.getString("speed");
+
                 JSONArray arr = new JSONArray(weatherCondition);
 
 
                 for (int i=0; i < arr.length(); i++){
                     JSONObject infoJson = arr.getJSONObject(i);
-                    String main = infoJson.getString("main");
-                    String desc = infoJson.getString("description");
-
-                    weatherText += main + ": " + desc + "\r\n";
+                    String description = infoJson.getString("description").toUpperCase();
+                    weatherText += description + "\r\n";
                 }
 
                 weatherTextView.setText(weatherText);
                 cityNameTextView.setText(cityName + ", " + countyName);
+                weatherTemp.setText(temp + " °C");
+                conditionOther.setText("Wind: " + windSpeed + " km/s\r\nHumidity: " + humidity + " %");
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -105,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         // hide keyboard from the window
         inputMethod.hideSoftInputFromWindow(cityTextView.getWindowToken(),0);
-
+        cityTextView.setText("");
         DownloadTask task = new DownloadTask();
         String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&units=metric&APPID=" + appid;
         task.execute(urlString);
@@ -123,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
         afternoon = findViewById(R.id.afternoon);
         night = findViewById(R.id.night);
         cityNameTextView = findViewById(R.id.today);
-
+        conditionOther = findViewById(R.id.conditionEtc);
+        cityTextView.setText("");
         searchBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
