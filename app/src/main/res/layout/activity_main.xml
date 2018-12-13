@@ -26,9 +26,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:text="Search Location"
+        android:textAllCaps="false"
         android:textColor="#2c3a2c"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:fontFamily="sans-serif" />
 
     <EditText
         android:id="@+id/cityEditText"
