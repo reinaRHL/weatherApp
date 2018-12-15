@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.OnNmeaMessageListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -196,11 +197,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Toast.makeText(getApplicationContext(),"test", Toast.LENGTH_SHORT).show();
                 findMyCityWeather(location);
+                locationManager.removeUpdates(locationListener);
             }
 
             @Override
