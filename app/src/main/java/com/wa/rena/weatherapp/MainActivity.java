@@ -135,6 +135,15 @@ public class MainActivity extends AppCompatActivity {
         cityTextView.setText("");
         DownloadTask task = new DownloadTask();
         String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&units=metric&APPID=" + appid;
+        task.execute(urlString);
+    }
+
+    public void findMyCityWeather(Location location){
+
+        String lat = location.getLatitude() +"";
+        String lng = location.getLongitude() +"";
+        DownloadTask task = new DownloadTask();
+        String urlString = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat+ "&lon=" + lng + "&units=metric&APPID=" + appid;
         // String foreCastUrlString = "http://api.openweathermap.org/data/2.5/forecast?q=" + encodedCityName + "&units=metric&appid=" + appid;
         task.execute(urlString);
     }
@@ -188,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
                 Toast.makeText(getApplicationContext(),"test", Toast.LENGTH_SHORT).show();
+                findMyCityWeather(location);
             }
 
             @Override
