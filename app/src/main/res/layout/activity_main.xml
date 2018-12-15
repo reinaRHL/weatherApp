@@ -133,7 +133,7 @@
                 android:layout_weight="1"
                 android:background="#7dfab38a"
                 android:gravity="center"
-                android:textSize="60sp"
+                android:textSize="58sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
