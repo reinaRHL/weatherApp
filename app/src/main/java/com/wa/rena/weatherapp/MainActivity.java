@@ -92,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject tempObj = jsonObj.getJSONObject("main");
                     String temp = tempObj.getString("temp");
+                    double tempDouble = Double.parseDouble(temp);
+                    temp = String.format("%,.1f", tempDouble);
+
                     String humidity = tempObj.getString("humidity");
 
                     JSONObject windObj = jsonObj.getJSONObject("wind");
