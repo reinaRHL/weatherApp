@@ -122,6 +122,88 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public class DownloadTmrWeather extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            String result ="";
+            try {
+                URL url = new URL(strings[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                InputStream stream = connection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(stream);
+
+                int data = reader.read();
+
+                while (data != -1){
+                    char current = (char) data;
+                    result += current;
+                    data = reader.read();
+                }
+
+                return result;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            String weatherText = "";
+            try {
+                JSONObject jsonObj = new JSONObject(result);
+                String weatherCondition = jsonObj.getString("list");
+                JSONArray arr = new JSONArray(weatherCondition);
+
+                weatherText = extractTmrData(arr, 3);
+                morning.setText(weatherText);
+
+                weatherText = extractTmrData(arr, 5);
+                afternoon.setText(weatherText);
+
+                weatherText = extractTmrData(arr, 7);
+                night.setText(weatherText);
+
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(),"Something went wrong :(", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public String extractTmrData(JSONArray arr, int index){
+        try {
+            JSONObject wholeWeatherInfo = arr.getJSONObject(index);
+            JSONObject main = wholeWeatherInfo.getJSONObject("main");
+
+            String temp = main.getString("temp");
+            double tempDouble = Double.parseDouble(temp);
+            temp = String.format("%,.1f", tempDouble);
+
+            String weatherString = wholeWeatherInfo.getString("weather");
+            JSONArray weatherArr = new JSONArray(weatherString);
+            String weatherText="";
+
+            for (int i=0; i < weatherArr.length(); i++){
+                JSONObject weatherJson = weatherArr.getJSONObject(i);
+                String description = weatherJson.getString("description").toUpperCase();
+                weatherText += description + "\r\n";
+            }
+
+            weatherText = weatherText + temp + " °C";
+            return weatherText;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+
+    }
     public void findWeather(){
         String city = cityTextView.getText().toString();
         String[] splittedCity = city.trim().split("\\s*,\\s*");
@@ -140,6 +222,10 @@ public class MainActivity extends AppCompatActivity {
         DownloadTask task = new DownloadTask();
         String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName + "&units=metric&APPID=" + appid;
         task.execute(urlString);
+
+        DownloadTmrWeather taskTmr = new DownloadTmrWeather();
+        urlString = "http://api.openweathermap.org/data/2.5/forecast?q=" + encodedCityName + "&units=metric&appid=" + appid;
+        taskTmr.execute(urlString);
     }
 
     public void findMyCityWeather(Location location){
@@ -150,6 +236,11 @@ public class MainActivity extends AppCompatActivity {
         String urlString = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat+ "&lon=" + lng + "&units=metric&APPID=" + appid;
         // String foreCastUrlString = "http://api.openweathermap.org/data/2.5/forecast?q=" + encodedCityName + "&units=metric&appid=" + appid;
         task.execute(urlString);
+
+        DownloadTmrWeather taskTmr = new DownloadTmrWeather();
+        urlString = "http://api.openweathermap.org/data/2.5/forecast?lat=" + lat+ "&lon=" + lng + "&units=metric&APPID=" + appid;
+        taskTmr.execute(urlString);
+
     }
 
     @SuppressLint("MissingPermission")
