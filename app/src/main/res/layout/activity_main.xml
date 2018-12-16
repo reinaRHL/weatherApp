@@ -196,13 +196,17 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#7f95ae96" />
+                android:gravity="center"
+                android:background="#7f95ae96"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/afternoon"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="20sp"
                 android:background="#7dfab38a" />
 
             <TextView
@@ -210,6 +214,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="20sp"
                 android:background="#7f95ae96" />
         </LinearLayout>
     </LinearLayout>
